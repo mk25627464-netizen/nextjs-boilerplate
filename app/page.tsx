@@ -1,9 +1,9 @@
 export default function Home() {
   const tools = [
-    { name: "Word ↔ PDF", desc: "যেকোনো ফরম্যাটে ফাইল বদলান" },
-    { name: "ইমেজ ব্যাকগ্রাউন্ড রিমুভার", desc: "এক ক্লিকে ছবির ব্যাকগ্রাউন্ড মুছুন" },
-    { name: "ফাইল কমপ্রেসার", desc: "ফাইলের সাইজ ছোট করুন" },
-    { name: "ভিডিও থেকে সাবটাইটেল", desc: "অটো ট্রান্সক্রিপশন ও সাবটাইটেল" },
+    { name: "Word ↔ PDF", desc: "Convert files to any format instantly" },
+    { name: "Image Background Remover", desc: "Remove image backgrounds in one click" },
+    { name: "File Compressor", desc: "Shrink your file size without losing quality" },
+    { name: "Video to Subtitles", desc: "Auto transcription & subtitle generation" },
   ];
 
   return (
@@ -17,7 +17,7 @@ export default function Home() {
 
       <main className="px-6 py-10 max-w-3xl mx-auto">
         <h2 className="text-[#1E2A2A] text-xl font-semibold mb-6">
-          আপনার কাজ বেছে নিন
+          Choose a tool
         </h2>
 
         <div className="grid gap-4">
@@ -31,7 +31,7 @@ export default function Home() {
               </h3>
               <p className="text-[#6B7A7A] text-sm mt-1">{tool.desc}</p>
               <button className="mt-4 bg-[#FF7A33] text-white px-4 py-2 rounded-lg font-medium">
-                শুরু করুন
+                Get Started
               </button>
             </div>
           ))}

@@ -4,6 +4,7 @@ import chromium from "@sparticuz/chromium";
 import puppeteer from "puppeteer-core";
 
 export const runtime = "nodejs";
+export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,9 +19,13 @@ export async function POST(req: NextRequest) {
 
     const { value: html } = await mammoth.convertToHtml({ buffer });
 
+    chromium.setGraphicsMode = false;
+
+    const executablePath = await chromium.executablePath();
+
     const browser = await puppeteer.launch({
-      args: chromium.args,
-      executablePath: await chromium.executablePath(),
+      args: [...chromium.args, "--single-process", "--no-sandbox"],
+      executablePath,
       headless: true,
     });
 
@@ -39,6 +44,9 @@ export async function POST(req: NextRequest) {
     });
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ error: "Conversion failed" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Conversion failed: " + String(err) },
+      { status: 500 }
+    );
   }
 }

@@ -1,6 +1,47 @@
+"use client";
+import { useState } from "react";
+
 export default function Home() {
-  const tools = [
-    { name: "Word ↔ PDF", desc: "Convert files to any format instantly" },
+  const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleConvert = async () => {
+    if (!file) {
+      setError("Please choose a file first.");
+      return;
+    }
+    setError("");
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/convert", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error("Conversion failed");
+      }
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "converted.pdf";
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const otherTools = [
     { name: "Image Background Remover", desc: "Remove image backgrounds in one click" },
     { name: "File Compressor", desc: "Shrink your file size without losing quality" },
     { name: "Video to Subtitles", desc: "Auto transcription & subtitle generation" },
@@ -21,7 +62,35 @@ export default function Home() {
         </h2>
 
         <div className="grid gap-4">
-          {tools.map((tool) => (
+          <div className="bg-white border border-[#E1E8E8] rounded-xl p-5 shadow-sm">
+            <h3 className="text-[#1E2A2A] font-medium text-lg">
+              Word → PDF
+            </h3>
+            <p className="text-[#6B7A7A] text-sm mt-1">
+              Convert your Word file to PDF instantly
+            </p>
+
+            <input
+              type="file"
+              accept=".doc,.docx"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
+              className="mt-4 block w-full text-sm text-[#1E2A2A]"
+            />
+
+            <button
+              onClick={handleConvert}
+              disabled={loading}
+              className="mt-4 bg-[#FF7A33] text-white px-4 py-2 rounded-lg font-medium disabled:opacity-50"
+            >
+              {loading ? "Converting..." : "Convert to PDF"}
+            </button>
+
+            {error && (
+              <p className="text-[#EF4444] text-sm mt-2">{error}</p>
+            )}
+          </div>
+
+          {otherTools.map((tool) => (
             <div
               key={tool.name}
               className="bg-white border border-[#E1E8E8] rounded-xl p-5 shadow-sm"
@@ -30,8 +99,8 @@ export default function Home() {
                 {tool.name}
               </h3>
               <p className="text-[#6B7A7A] text-sm mt-1">{tool.desc}</p>
-              <button className="mt-4 bg-[#FF7A33] text-white px-4 py-2 rounded-lg font-medium">
-                Get Started
+              <button className="mt-4 bg-[#E1E8E8] text-[#6B7A7A] px-4 py-2 rounded-lg font-medium">
+                Coming Soon
               </button>
             </div>
           ))}

@@ -24,7 +24,8 @@ export default function Home() {
       });
 
       if (!res.ok) {
-        throw new Error("Conversion failed");
+        const text = await res.text();
+        throw new Error(`Server error ${res.status}: ${text}`);
       }
 
       const blob = await res.blob();
@@ -34,8 +35,8 @@ export default function Home() {
       a.download = "converted.pdf";
       a.click();
       window.URL.revokeObjectURL(url);
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
+    } catch (err: any) {
+      setError("ERROR DETAIL: " + (err?.message || String(err)));
     } finally {
       setLoading(false);
     }
@@ -86,7 +87,7 @@ export default function Home() {
             </button>
 
             {error && (
-              <p className="text-[#EF4444] text-sm mt-2">{error}</p>
+              <p className="text-[#EF4444] text-sm mt-2 break-words">{error}</p>
             )}
           </div>
 

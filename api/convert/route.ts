@@ -29,7 +29,9 @@ export async function POST(req: NextRequest) {
     const pdfBuffer = await page.pdf({ format: "A4" });
     await browser.close();
 
-    return new NextResponse(pdfBuffer, {
+    const pdfBytes = Buffer.from(pdfBuffer);
+
+    return new NextResponse(pdfBytes, {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": "attachment; filename=converted.pdf",
@@ -39,4 +41,4 @@ export async function POST(req: NextRequest) {
     console.error(err);
     return NextResponse.json({ error: "Conversion failed" }, { status: 500 });
   }
-                            }
+}
